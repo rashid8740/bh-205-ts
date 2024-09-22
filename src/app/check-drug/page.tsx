@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, Suspense } from "react";
+import React, { useRef, Suspense, useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
@@ -8,37 +8,40 @@ import { useImage } from "@/context/ImageContext";
 
 const ClientSideContent: React.FC = () => {
   const router = useRouter();
-  const searchParams = new URLSearchParams(
-    typeof window !== "undefined" ? window.location.search : ""
-  );
-  const mode = searchParams.get("mode") || "camera";
+  const [mode, setMode] = useState<string>("camera");
   const { setCapturedImage } = useImage();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isClient, setIsClient] = useState(false);
 
-  const handleBackClick = () => {
+  useEffect(() => {
+    setIsClient(true);
+    const searchParams = new URLSearchParams(window.location.search);
+    setMode(searchParams.get("mode") || "camera");
+  }, []);
+
+  const handleBackClick = (): void => {
     router.push("/");
   };
 
-  const handleTakePicture = () => {
+  const handleTakePicture = (): void => {
     router.push("/check-drug/camera-permission");
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (e: ProgressEvent<FileReader>) => {
-        const result = e.target?.result;
-        if (typeof result === "string") {
-          setCapturedImage(result);
-          router.push("/check-drug/preview");
-        }
+        setCapturedImage(e.target?.result as string);
+        router.push("/check-drug/preview");
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const renderCameraMode = () => (
+  const renderCameraMode = (): JSX.Element => (
     <div className="flex flex-col md:flex-row md:space-x-8 items-start md:items-stretch">
       <div className="w-full md:w-1/2 flex items-start">
         <div className="w-full aspect-[4/3] relative">
@@ -81,7 +84,7 @@ const ClientSideContent: React.FC = () => {
     </div>
   );
 
-  const renderGalleryMode = () => (
+  const renderGalleryMode = (): JSX.Element => (
     <div className="flex flex-col justify-between">
       <div className="flex-grow">
         <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 mb-4">
@@ -111,6 +114,10 @@ const ClientSideContent: React.FC = () => {
       </div>
     </div>
   );
+
+  if (!isClient) {
+    return null; // or a loading indicator
+  }
 
   return (
     <main className="px-4 py-8 max-w-5xl mx-auto">

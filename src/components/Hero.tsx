@@ -1,16 +1,17 @@
 "use client";
 
+import React from "react";
 import { Camera, Image as ImageIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-export default function Hero(): JSX.Element {
+const Hero: React.FC = () => {
   const router = useRouter();
 
-  const handleCameraClick = () => {
+  const handleCameraClick = (): void => {
     router.push("/check-drug?mode=camera");
   };
 
-  const handleGalleryClick = () => {
+  const handleGalleryClick = (): void => {
     router.push("/check-drug?mode=gallery");
   };
 
@@ -59,4 +60,6 @@ export default function Hero(): JSX.Element {
       </div>
     </div>
   );
-}
+};
+
+export default Hero;

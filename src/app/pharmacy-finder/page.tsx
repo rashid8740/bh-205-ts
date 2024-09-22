@@ -56,10 +56,6 @@ const PharmacyFinder: React.FC = () => {
           <iframe
             width="100%"
             height="100%"
-            frameBorder="0"
-            scrolling="no"
-            marginHeight="0"
-            marginWidth="0"
             src="https://www.openstreetmap.org/export/embed.html?bbox=36.7352294921875%2C-1.3839533963377012%2C37.08831787109375%2C-1.1625120352030515&amp;layer=mapnik"
             style={{ border: "1px solid black" }}
           />
